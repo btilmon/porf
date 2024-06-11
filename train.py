@@ -109,6 +109,7 @@ class PoseRunner:
 
             self.update_image_index()
 
+            """
             intrinsic, pose, intrinsic_src_list, pose_src_list, match_list = self.dataset.sample_matches(self.img_idx,
                                                                                                          self.pose_param_net)
 
@@ -123,6 +124,13 @@ class PoseRunner:
                                                               match_list,
                                                               self.num_pairs,
                                                               self.inlier_threshold)
+            """
+            epipolar_loss = 0.0
+            
+            
+            # ref frame
+            pose = self.pose_param_net(self.img_idx)
+
 
             # neus
             data = self.dataset.gen_random_rays_at(self.img_idx,
@@ -183,7 +191,7 @@ class PoseRunner:
             self.writer.add_scalar('Statistics/cdf', cdf[:, :1].mean(), self.iter_step)
             self.writer.add_scalar('Statistics/weight_max', weight_max.mean(), self.iter_step)
             self.writer.add_scalar('Statistics/psnr', psnr, self.iter_step)
-            self.writer.add_scalar('Statistics/inlier_rate', avg_inlier_rate, self.iter_step)
+            # self.writer.add_scalar('Statistics/inlier_rate', avg_inlier_rate, self.iter_step)
             self.writer.add_scalar('Loss/epipolar_loss', epipolar_loss, self.iter_step)
 
             # check pose grad for debug if not using porf
